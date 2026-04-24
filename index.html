@@ -1,110 +1,1265 @@
-.<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>JavaScript Security Tools – XSS, CSRF & Vulnerability Analysis</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
+<meta name="robots" content="index, follow">
 
-  <!-- Google verification -->
-  <meta name="google-site-verification" content="PkLa_ViOo6FAHpvh8SacceMb95o9tePRdrqLNBz9X1M" />
+<title>JavaScript Vulnerability Scanner – Free Static Code Analysis Tool</title>
 
-  <!-- SEO -->
-  <meta name="description" content="JavaScript security tools for detecting XSS, CSRF vulnerabilities, unsafe eval usage, dependency risks, and secure sandbox execution.">
-  <meta name="keywords" content="javascript security tools, xss tester javascript, csrf attack test js, unsafe eval detection javascript, npm vulnerability scanner, js sandbox execution">
+<meta name="description" content="Free JavaScript vulnerability scanner. Paste your JS code to detect XSS sinks, unsafe eval, DOM injection, prototype pollution, hardcoded secrets, and insecure patterns. No login, no server, runs in browser.">
 
-  <!-- AdSense -->
-  <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">
+<meta name="keywords" content="javascript vulnerability scanner, js vulnerability scanner, javascript security scanner, javascript code vulnerability checker, xss vulnerability scanner javascript, eval security javascript, dom xss scanner, javascript security analysis tool, js security checker online, javascript vulnerability detection">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="JavaScript Security Tools – XSS & Vulnerability Detection">
-  <meta property="og:description" content="Test XSS, CSRF, unsafe eval, and dependency vulnerabilities in JavaScript apps.">
-  <meta property="og:type" content="website">
+<link rel="canonical" href="https://franrivalbigprojects.github.io/javascript-security-tools/">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #020617;
-      color: #e2e8f0;
-      margin: 0;
-      padding: 40px;
+<meta property="og:title" content="JavaScript Vulnerability Scanner – Free Static Code Analysis">
+<meta property="og:description" content="Paste JS code to detect XSS sinks, unsafe eval, DOM injection, prototype pollution, and hardcoded secrets. Free, no login.">
+<meta property="og:type" content="website">
+
+<meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #060810;
+  --surface: #090c18;
+  --surface2: #0c1020;
+  --border: #131c2e;
+  --border-light: #1a2840;
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.1);
+  --red-dim2: rgba(239,68,68,0.05);
+  --orange: #f97316;
+  --orange-dim: rgba(249,115,22,0.1);
+  --yellow: #eab308;
+  --yellow-dim: rgba(234,179,8,0.08);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.1);
+  --green-dim2: rgba(34,197,94,0.05);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.08);
+  --text: #cbd5e1;
+  --text-muted: #475569;
+  --text-dim: #1e3048;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HEADER ─── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,8,16,0.96);
+  backdrop-filter: blur(10px);
+}
+
+.header-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-mark {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  background: var(--red-dim2);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.logo-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.logo-text strong { color: var(--red); font-weight: 500; }
+
+/* ─── WRAPPER ─── */
+.wrapper {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 48px 0 36px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 36px;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 16px;
+  height: 1px;
+  background: var(--red);
+  opacity: 0.5;
+}
+
+h1 {
+  font-size: clamp(22px, 3.5vw, 30px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+}
+
+h1 em { font-style: normal; color: var(--red); }
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-muted);
+  max-width: 620px;
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+
+.hero-sub strong { color: var(--text); }
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+}
+
+.badge.red {
+  color: var(--red);
+  background: var(--red-dim2);
+  border-color: rgba(239,68,68,0.25);
+}
+
+/* ─── TOOL ─── */
+.tool-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.tool-head {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tool-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tool-actions-top {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-sm {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  border: 1px solid;
+}
+
+.btn-sm:hover { opacity: 0.75; }
+.btn-sm-sample { background: var(--green-dim); color: var(--green); border-color: rgba(34,197,94,0.25); }
+.btn-sm-clear { background: transparent; color: var(--text-muted); border-color: var(--border-light); }
+
+.tool-body {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 440px;
+}
+
+.tool-input-side {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+#jsInput {
+  flex: 1;
+  width: 100%;
+  min-height: 360px;
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.65;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  resize: none;
+  tab-size: 2;
+}
+
+#jsInput:focus { outline: none; }
+#jsInput::placeholder { color: var(--text-dim); }
+
+.scan-btn-wrap {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.btn-scan {
+  width: 100%;
+  padding: 11px;
+  font-size: 14px;
+  font-family: var(--sans);
+  font-weight: 600;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.btn-scan:hover { opacity: 0.85; }
+.btn-scan:active { transform: scale(0.98); }
+
+/* ─── RESULTS SIDE ─── */
+.tool-results-side {
+  display: flex;
+  flex-direction: column;
+}
+
+.results-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.results-area {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  min-height: 380px;
+}
+
+.results-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 360px;
+  gap: 8px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 12px;
+  text-align: center;
+}
+
+.results-empty-icon { font-size: 28px; opacity: 0.3; }
+
+/* ─── FINDING CARDS ─── */
+.finding {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border-left: 3px solid;
+}
+
+.finding-critical { border-left-color: var(--red); }
+.finding-high { border-left-color: var(--orange); }
+.finding-medium { border-left-color: var(--yellow); }
+.finding-low { border-left-color: var(--text-dim); }
+
+.finding-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.finding-sev {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.sev-critical { color: var(--red); background: var(--red-dim2); border-color: rgba(239,68,68,0.2); }
+.sev-high { color: var(--orange); background: var(--orange-dim); border-color: rgba(249,115,22,0.2); }
+.sev-medium { color: var(--yellow); background: var(--yellow-dim); border-color: rgba(234,179,8,0.2); }
+.sev-low { color: var(--text-muted); background: var(--surface2); border-color: var(--border-light); }
+
+.finding-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+
+.finding-body {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.finding-snippet {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 6px 10px;
+  color: var(--red);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.finding-fix {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--green);
+  font-family: var(--mono);
+  line-height: 1.5;
+}
+
+/* stats */
+.scan-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scan-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+}
+
+.scan-stat .snum {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  display: block;
+}
+
+.scan-stat .slbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+.ok-box {
+  background: var(--green-dim);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 5px;
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--green);
+  text-align: center;
+}
+
+/* ─── DIVIDER ─── */
+hr.divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+/* ─── CONTENT ─── */
+.content-section { margin-bottom: 48px; }
+
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  opacity: 0.7;
+  margin-bottom: 8px;
+  display: block;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+
+p {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--surface2);
+  color: var(--red);
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border-light);
+}
+
+.vuln-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.vuln-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: border-color 0.15s;
+}
+
+.vuln-card:hover { border-color: var(--border-light); }
+
+.vc-sev {
+  font-family: var(--mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 8px;
+}
+
+.vc-title {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.vuln-card p { font-size: 12px; margin: 0; line-height: 1.6; }
+
+/* ─── DENSE BLOCK ─── */
+.dense-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.dense-block p {
+  font-size: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.8;
+}
+
+.dense-block p:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.dense-block strong { color: var(--text); }
+
+/* ─── FAQ ─── */
+.faq-list {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: none;
+  padding: 15px 20px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: var(--sans);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s;
+  font-weight: 500;
+}
+
+.faq-q:hover { background: var(--red-dim2); }
+
+.faq-arrow {
+  font-size: 11px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  font-family: var(--mono);
+}
+
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+
+.faq-a {
+  display: none;
+  padding: 0 20px 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.faq-item.open .faq-a { display: block; }
+
+/* ─── OTHER TOOLS ─── */
+.other-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.other-tool-link {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  text-decoration: none;
+  transition: border-color 0.15s, background 0.15s;
+  display: block;
+}
+
+.other-tool-link:hover {
+  border-color: rgba(239,68,68,0.3);
+  background: var(--red-dim2);
+}
+
+.otl-eye {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 5px;
+}
+
+.otl-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--red);
+  font-weight: 500;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 22px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+footer p {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: var(--mono);
+  margin: 0;
+}
+
+@media (max-width: 680px) {
+  .tool-body { grid-template-columns: 1fr; }
+  .tool-input-side { border-right: none; border-bottom: 1px solid var(--border); }
+  .vuln-grid { grid-template-columns: 1fr; }
+  .scan-stats { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 32px 0 24px; }
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "JavaScript Vulnerability Scanner",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Free JavaScript vulnerability scanner. Paste JS code to detect XSS sinks, unsafe eval usage, DOM-based injection, prototype pollution, hardcoded secrets, insecure randomness, and other common JS security vulnerabilities. No login, no server, runs entirely in the browser.",
+  "featureList": "XSS sink detection, eval security analysis, DOM injection detection, prototype pollution scanner, hardcoded secret detection, insecure randomness, CSRF pattern detection, innerHTML sink analysis"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does a JavaScript vulnerability scanner detect?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A JavaScript vulnerability scanner analyzes JS code for common security issues: XSS sinks (innerHTML, document.write, eval with user input), unsafe eval usage, DOM-based injection patterns, prototype pollution (assignments to __proto__ or Object.prototype), hardcoded credentials and API keys, insecure randomness (Math.random for security purposes), and CSRF-related patterns. Static analysis catches these patterns without executing the code."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is DOM-based XSS in JavaScript?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "DOM-based XSS occurs when JavaScript takes attacker-controllable data from the DOM (location.hash, location.search, document.referrer) and passes it to a dangerous sink without sanitization. Common sinks: innerHTML, outerHTML, document.write, eval, setTimeout with a string argument, and jQuery's html() method. Unlike reflected or stored XSS, DOM XSS is processed entirely client-side and may not appear in server logs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is eval dangerous in JavaScript?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "eval() executes a string as JavaScript code, making it a critical XSS vector if user input reaches it. It also defeats JavaScript engine optimizations, making code slower. Alternatives: JSON.parse for data, Function constructor for templates. Even indirect eval usage via setTimeout('code') or setInterval('code') is dangerous. Modern CSP headers can block eval with unsafe-eval restrictions."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is prototype pollution in JavaScript?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Prototype pollution occurs when an attacker can modify Object.prototype or an object's __proto__ property, injecting properties that affect all objects in the application. Common vectors: deep merge functions, property assignment from user-controlled keys like obj[userInput] = value. It can lead to privilege escalation, property injection, and in some cases remote code execution in Node.js. Mitigation: use Object.create(null) for dictionaries, freeze Object.prototype, validate merge keys."
+      }
     }
-    h1 {
-      color: #f87171;
-    }
-    p {
-      max-width: 950px;
-      line-height: 1.6;
-    }
-    .tools {
-      margin-top: 30px;
-    }
-    .tool {
-      background: #1e293b;
-      padding: 14px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      transition: 0.2s;
-    }
-    .tool:hover {
-      background: #334155;
-    }
-    a {
-      color: #22c55e;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  ]
+}
+</script>
+
 </head>
+
 <body>
 
-  <h1>JavaScript Security Tools</h1>
+<header>
+  <div class="header-inner">
+    <span class="logo-mark">sec</span>
+    <span class="logo-text"><strong>javascript</strong>-vulnerability-scanner</span>
+  </div>
+</header>
 
-  <p>
-    A collection of JavaScript security tools for detecting vulnerabilities,
-    testing attack vectors, and improving application security in frontend
-    and backend environments.
-  </p>
+<div class="wrapper">
 
-  <p>
-    Analyze XSS and CSRF risks, detect unsafe eval usage, scan dependencies,
-    and execute code safely in sandboxed environments.
-  </p>
+  <!-- HERO -->
 
-  <div class="tools">
+  <section class="hero">
+    <p class="hero-eyebrow">Free JavaScript Security Tool</p>
+    <h1><em>JavaScript Vulnerability Scanner</em> —<br>Static Code Analysis in Browser</h1>
+    <p class="hero-sub">
+      Paste your <strong>JavaScript code</strong> to detect XSS sinks, unsafe eval, DOM injection, prototype pollution, hardcoded secrets, and insecure patterns. <strong>No login, no server, no data sent anywhere</strong> — runs entirely in your browser.
+    </p>
+    <div class="badges">
+      <span class="badge red">XSS detection</span>
+      <span class="badge red">Prototype pollution</span>
+      <span class="badge">eval analysis</span>
+      <span class="badge">DOM injection</span>
+      <span class="badge">Hardcoded secrets</span>
+      <span class="badge">Free · No login</span>
+    </div>
+  </section>
 
-    <div class="tool"><a href="./javascript_csrf_tester/">CSRF Tester</a></div>
-    <div class="tool"><a href="./javascript_dependency_vulnerability_scanner/">Dependency Vulnerability Scanner</a></div>
-    <div class="tool"><a href="./javascript_sandbox_executor/">Sandbox Executor</a></div>
-    <div class="tool"><a href="./javascript_unsafe_eval_detector/">Unsafe Eval Detector</a></div>
-    <div class="tool"><a href="./javascript_xss_tester/">XSS Tester</a></div>
+  <!-- TOOL -->
 
+  <div class="tool-wrap">
+    <div class="tool-head">
+      <span class="tool-title">// JavaScript Vulnerability Scanner</span>
+      <div class="tool-actions-top">
+        <button class="btn-sm btn-sm-sample" onclick="loadSample()">Load Sample</button>
+        <button class="btn-sm btn-sm-clear" onclick="clearTool()">Clear</button>
+      </div>
+    </div>
+    <div class="tool-body">
+      <!-- Input -->
+      <div class="tool-input-side">
+        <div class="input-label">// Paste JavaScript code</div>
+        <textarea id="jsInput" placeholder="Paste your JavaScript code here..."></textarea>
+        <div class="scan-btn-wrap">
+          <button class="btn-scan" onclick="scanCode()">Scan for Vulnerabilities</button>
+        </div>
+      </div>
+      <!-- Results -->
+      <div class="tool-results-side">
+        <div class="results-label">
+          <span>// Scan results</span>
+          <span id="findingCount" style="font-family:var(--mono);font-size:10px;color:var(--text-dim);"></span>
+        </div>
+        <div class="results-area" id="resultsArea">
+          <div class="results-empty" id="resultsEmpty">
+            <span class="results-empty-icon">🔍</span>
+            <span>Paste JS code and click<br>Scan for Vulnerabilities</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- SEO LONG TAIL -->
-  <h2>Common JavaScript Security Queries</h2>
+  <hr class="divider">
 
-  <ul>
-    <li>how to prevent xss attacks in javascript</li>
-    <li>csrf attack example and protection javascript</li>
-    <li>is eval dangerous in javascript security risks</li>
-    <li>scan npm dependencies for vulnerabilities</li>
-    <li>how to sandbox javascript execution safely</li>
-    <li>common javascript security vulnerabilities and fixes</li>
-    <li>frontend security best practices javascript apps</li>
-  </ul>
+  <!-- WHAT DOES IT DETECT -->
 
-  <p>
-    These tools are ideal for developers, security engineers,
-    and teams building secure web applications.
-  </p>
+  <section class="content-section">
+    <span class="section-eyebrow">// Detection coverage</span>
+    <h3>What This JavaScript Vulnerability Scanner Detects</h3>
+    <p>
+      Static analysis cannot catch all vulnerabilities — runtime behavior, user input paths, and server-side issues require dynamic testing. But static scanning reliably catches <strong>dangerous patterns</strong> that account for the majority of JavaScript security issues in production code.
+    </p>
+    <div class="vuln-grid">
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--red);">Critical //</p>
+        <span class="vc-title">XSS Sinks</span>
+        <p>Detects dangerous assignments: <code>innerHTML</code>, <code>outerHTML</code>, <code>document.write</code>, <code>insertAdjacentHTML</code>. These inject raw HTML and are the primary XSS vectors in modern JS applications.</p>
+      </div>
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--red);">Critical //</p>
+        <span class="vc-title">Unsafe eval Usage</span>
+        <p>Flags <code>eval()</code>, <code>Function()</code>, <code>setTimeout</code>/<code>setInterval</code> with string arguments. Executing strings as code is a direct RCE/XSS path if any part of the input is user-controlled.</p>
+      </div>
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--orange);">High //</p>
+        <span class="vc-title">Prototype Pollution</span>
+        <p>Detects assignments to <code>__proto__</code>, <code>Object.prototype</code>, and dynamic property merges that can poison all objects. Critical in Node.js — can lead to privilege escalation.</p>
+      </div>
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--orange);">High //</p>
+        <span class="vc-title">DOM-Based Sources</span>
+        <p>Flags reads from <code>location.hash</code>, <code>location.search</code>, <code>document.referrer</code>, <code>document.cookie</code> — common sources for DOM XSS when data flows to a sink without sanitization.</p>
+      </div>
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--yellow);">Medium //</p>
+        <span class="vc-title">Hardcoded Secrets</span>
+        <p>Detects patterns matching API keys, tokens, passwords, and AWS credentials in JS code. Secrets in client-side code are publicly exposed to anyone who views source.</p>
+      </div>
+      <div class="vuln-card">
+        <p class="vc-sev" style="color:var(--yellow);">Medium //</p>
+        <span class="vc-title">Insecure Randomness</span>
+        <p><code>Math.random()</code> is not cryptographically secure — never use it for tokens, session IDs, or security-sensitive values. Use <code>crypto.getRandomValues()</code> instead.</p>
+      </div>
+    </div>
+  </section>
 
-  <!-- snippet SEO -->
-  <pre>
-const sanitized = input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  </pre>
+  <hr class="divider">
+
+  <!-- WHAT DEVS ASK -->
+
+  <section class="content-section">
+    <span class="section-eyebrow">// Community questions</span>
+    <h3>What Developers Ask About JavaScript Vulnerability Scanning</h3>
+    <div class="dense-block">
+      <p><strong>What is the difference between static and dynamic JavaScript vulnerability scanning?</strong><br>
+      Static analysis (what this tool does) reads your code without executing it — finding dangerous patterns, sink assignments, and known-bad API usage. It's fast and works on any code, but can produce false positives and misses runtime behavior. Dynamic scanning executes the application and observes real behavior — like actual XSS payload injection or prototype pollution via API calls. Production-grade security requires both: static scanning in your IDE/CI pipeline and dynamic testing (DAST) against a running application. Tools like Burp Suite, OWASP ZAP, or Snyk provide dynamic scanning.</p>
+
+
+  <p><strong>How do I fix innerHTML XSS vulnerabilities in JavaScript?</strong><br>
+  Replace <code>element.innerHTML = userInput</code> with <code>element.textContent = userInput</code> for plain text content. For rich content, use the DOMParser sanitization approach or the Sanitizer API (Chrome 93+). As a last resort, use a library like DOMPurify: <code>element.innerHTML = DOMPurify.sanitize(userInput)</code>. Never build HTML strings by concatenation with user input — even escaping is error-prone compared to using the DOM API directly.</p>
+
+  <p><strong>How do I detect if my JavaScript has been compromised (supply chain attack)?</strong><br>
+  Supply chain attacks inject malicious code into npm packages or CDN-hosted libraries. Mitigation: use Subresource Integrity (SRI) hashes on script tags to verify CDN content hasn't changed, pin exact versions in package.json (not ranges), run npm audit on every install, use Snyk or Socket.dev to monitor dependencies for new CVEs, and implement a strict Content Security Policy that blocks unexpected external script origins.</p>
+
+  <p><strong>Why is Math.random() insecure for generating tokens?</strong><br>
+  <code>Math.random()</code> is a pseudorandom number generator (PRNG) seeded by a predictable value. An attacker who observes several outputs can reconstruct the internal state and predict future values — making any token generated with it forgeable. Use <code>crypto.getRandomValues()</code> (browser) or <code>crypto.randomBytes()</code> (Node.js) — both use the OS's cryptographically secure random source. This applies to session tokens, CSRF tokens, reset links, and any security-sensitive random value.</p>
+</div>
+
+
+  </section>
+
+  <hr class="divider">
+
+  <!-- FAQ -->
+
+  <section class="content-section">
+    <span class="section-eyebrow">// FAQ</span>
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What does this JavaScript vulnerability scanner detect?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">XSS sinks (innerHTML, document.write, eval), prototype pollution patterns (__proto__, Object.prototype), DOM-based XSS sources (location.hash, document.referrer), hardcoded secrets and API keys, insecure randomness (Math.random for security), and unsafe dynamic code execution patterns.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Is my code sent to a server?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">No. All analysis runs entirely in your browser using JavaScript regex and pattern matching. Nothing is sent to any server. Safe to use with proprietary, production, or sensitive code.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is DOM-based XSS?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">DOM-based XSS occurs when JS reads from an attacker-controlled source (location.hash, URL params) and writes to a dangerous sink (innerHTML, eval) without sanitization. Unlike reflected XSS, it's processed entirely client-side and won't appear in server logs — making it harder to detect with server-side WAFs.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What is prototype pollution?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">Prototype pollution modifies Object.prototype or __proto__, injecting properties that affect all objects in the application. An attacker who controls keys in a deep merge or property assignment can poison global object behavior, potentially leading to privilege escalation or RCE in Node.js.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How is this different from Snyk or Burp Suite?<span class="faq-arrow">▾</span></button>
+        <div class="faq-a">Snyk scans npm dependencies against a CVE database — it doesn't analyze your code logic. Burp Suite is a dynamic scanner that crawls and attacks a running application. This tool does static analysis of JS code you paste directly — no running server, no npm install, instant results for code review or quick audits.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- OTHER TOOLS -->
+
+  <section class="content-section">
+    <span class="section-eyebrow">// More security tools</span>
+    <h3>Other Tools</h3>
+    <div class="other-tools">
+      <a href="javascript_xss_tester/" class="other-tool-link">
+        <p class="otl-eye">xss //</p>
+        <span class="otl-name">XSS Tester</span>
+      </a>
+      <a href="javascript_csrf_tester/" class="other-tool-link">
+        <p class="otl-eye">csrf //</p>
+        <span class="otl-name">CSRF Tester</span>
+      </a>
+      <a href="javascript_unsafe_eval_detector/" class="other-tool-link">
+        <p class="otl-eye">eval //</p>
+        <span class="otl-name">Unsafe Eval Detector</span>
+      </a>
+      <a href="javascript_dependency_vulnerability_scanner/" class="other-tool-link">
+        <p class="otl-eye">deps //</p>
+        <span class="otl-name">Dependency Scanner</span>
+      </a>
+      <a href="javascript_sandbox_executor/" class="other-tool-link">
+        <p class="otl-eye">sandbox //</p>
+        <span class="otl-name">Sandbox Executor</span>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <p>javascript-vulnerability-scanner · free · browser-only · no login</p>
+    <p>xss · eval · prototype-pollution · dom-injection · static analysis</p>
+  </div>
+</footer>
+
+<script>
+// ─── VULNERABILITY RULES ───
+const RULES = [
+  // CRITICAL
+  {
+    id: 'innerHTML',
+    title: 'XSS Sink: innerHTML assignment',
+    sev: 'critical',
+    pattern: /\.innerHTML\s*=/g,
+    body: 'Assigning to innerHTML can execute injected HTML including script tags. If the value includes any user-controlled data, this is a direct XSS vector.',
+    fix: 'Use .textContent for plain text, or DOMPurify.sanitize() for rich content.',
+    snippet: true
+  },
+  {
+    id: 'outerHTML',
+    title: 'XSS Sink: outerHTML assignment',
+    sev: 'critical',
+    pattern: /\.outerHTML\s*=/g,
+    body: 'outerHTML replaces the element and its children with raw HTML. Equivalent risk to innerHTML for XSS.',
+    fix: 'Use DOM methods (createElement, appendChild) to build elements programmatically.',
+    snippet: true
+  },
+  {
+    id: 'docwrite',
+    title: 'XSS Sink: document.write()',
+    sev: 'critical',
+    pattern: /document\.write\s*\(/g,
+    body: 'document.write() injects raw HTML into the page. Deprecated, blocks rendering, and a classic XSS sink.',
+    fix: 'Use DOM manipulation methods instead. Remove document.write() entirely.',
+    snippet: true
+  },
+  {
+    id: 'insertAdjacentHTML',
+    title: 'XSS Sink: insertAdjacentHTML()',
+    sev: 'critical',
+    pattern: /\.insertAdjacentHTML\s*\(/g,
+    body: 'insertAdjacentHTML() parses and inserts raw HTML. Same XSS risk as innerHTML when used with user data.',
+    fix: 'Use insertAdjacentText() for text, or sanitize with DOMPurify before use.',
+    snippet: true
+  },
+  {
+    id: 'eval',
+    title: 'Unsafe eval() usage',
+    sev: 'critical',
+    pattern: /\beval\s*\(/g,
+    body: 'eval() executes a string as JavaScript code. If any user-controlled data reaches eval(), it enables arbitrary code execution.',
+    fix: 'Use JSON.parse() for data. Never pass user input to eval(). Consider a template engine instead.',
+    snippet: true
+  },
+  {
+    id: 'function-constructor',
+    title: 'Unsafe Function() constructor',
+    sev: 'critical',
+    pattern: /new\s+Function\s*\(/g,
+    body: 'new Function() is equivalent to eval() — it executes a string as code. Often used to bypass eval restrictions but carries the same risk.',
+    fix: 'Avoid dynamic code generation. Refactor to use static functions.',
+    snippet: true
+  },
+  // HIGH
+  {
+    id: 'settimeout-string',
+    title: 'setTimeout/setInterval with string argument',
+    sev: 'high',
+    pattern: /(?:setTimeout|setInterval)\s*\(\s*['"`]/g,
+    body: 'Passing a string to setTimeout or setInterval evaluates it as code — equivalent to eval(). Use function references instead.',
+    fix: 'Replace setTimeout("code", n) with setTimeout(() => { code }, n).',
+    snippet: true
+  },
+  {
+    id: 'proto-pollution',
+    title: 'Prototype pollution: __proto__ assignment',
+    sev: 'high',
+    pattern: /__proto__\s*[=\[]/g,
+    body: 'Direct __proto__ assignment can modify the prototype chain of all objects. Attackers who control property keys in deep merges exploit this for privilege escalation.',
+    fix: 'Use Object.create(null) for dictionaries. Freeze Object.prototype. Validate all dynamic property keys.',
+    snippet: true
+  },
+  {
+    id: 'object-prototype',
+    title: 'Prototype pollution: Object.prototype modification',
+    sev: 'high',
+    pattern: /Object\.prototype\s*\[/g,
+    body: 'Modifying Object.prototype affects all objects in the application. If key comes from user input, this enables prototype pollution attacks.',
+    fix: 'Never assign to Object.prototype dynamically. Use Map instead of plain objects for user-controlled key-value data.',
+    snippet: true
+  },
+  {
+    id: 'dom-source-hash',
+    title: 'DOM XSS Source: location.hash',
+    sev: 'high',
+    pattern: /location\.hash/g,
+    body: 'location.hash is attacker-controlled without any server interaction. If this value flows to an XSS sink (innerHTML, eval) without sanitization, it enables DOM-based XSS.',
+    fix: 'Always sanitize location.hash before use. Avoid passing it to HTML sinks.',
+    snippet: true
+  },
+  {
+    id: 'dom-source-search',
+    title: 'DOM XSS Source: location.search',
+    sev: 'high',
+    pattern: /location\.search/g,
+    body: 'URL query parameters are attacker-controlled. Unsanitized use in HTML sinks enables DOM-based reflected XSS.',
+    fix: 'Use URLSearchParams to parse, then sanitize values before using in the DOM.',
+    snippet: true
+  },
+  {
+    id: 'dom-source-referrer',
+    title: 'DOM XSS Source: document.referrer',
+    sev: 'high',
+    pattern: /document\.referrer/g,
+    body: 'document.referrer can be spoofed. Using it in DOM sinks without sanitization enables DOM XSS.',
+    fix: 'Sanitize document.referrer before any DOM use. Prefer not using it for dynamic content.',
+    snippet: true
+  },
+  // MEDIUM
+  {
+    id: 'hardcoded-api-key',
+    title: 'Hardcoded API key or token pattern',
+    sev: 'medium',
+    pattern: /(?:api[_-]?key|apikey|api[_-]?secret|access[_-]?token|auth[_-]?token)\s*[:=]\s*['"`][A-Za-z0-9_\-]{16,}/gi,
+    body: 'A string matching an API key or token pattern was found in code. Client-side JS is public — anyone can view source and extract credentials.',
+    fix: 'Move secrets to environment variables on the server. Never include credentials in client-side code.',
+    snippet: true
+  },
+  {
+    id: 'hardcoded-aws',
+    title: 'Hardcoded AWS credential pattern',
+    sev: 'medium',
+    pattern: /AKIA[0-9A-Z]{16}/g,
+    body: 'A string matching an AWS Access Key ID pattern was detected. AWS keys in client-side code expose your cloud infrastructure.',
+    fix: 'Revoke the key immediately. Use IAM roles and server-side AWS SDK. Never expose AWS keys in client code.',
+    snippet: true
+  },
+  {
+    id: 'math-random-security',
+    title: 'Insecure randomness: Math.random()',
+    sev: 'medium',
+    pattern: /Math\.random\s*\(\s*\)/g,
+    body: 'Math.random() is not cryptographically secure and should never be used for security tokens, session IDs, or anything requiring unpredictability.',
+    fix: 'Use crypto.getRandomValues() in browsers or crypto.randomBytes() in Node.js for security-sensitive random values.',
+    snippet: true
+  },
+  {
+    id: 'localstorage-sensitive',
+    title: 'localStorage with sensitive key names',
+    sev: 'medium',
+    pattern: /localStorage\s*\.\s*setItem\s*\(\s*['"`](?:token|password|secret|auth|session|jwt)/gi,
+    body: 'Storing tokens, passwords, or session data in localStorage exposes them to XSS attacks. Any injected script can read all localStorage values.',
+    fix: 'Use httpOnly cookies for session tokens — they cannot be read by JavaScript. If localStorage is required, ensure strict CSP and no XSS vulnerabilities.',
+    snippet: true
+  },
+  // LOW
+  {
+    id: 'console-log',
+    title: 'console.log() in production code',
+    sev: 'low',
+    pattern: /console\s*\.\s*(?:log|info|debug|warn|error)\s*\(/g,
+    body: 'console.log() statements can leak sensitive data, internal state, or debugging information to users via browser DevTools.',
+    fix: 'Remove all console.log() calls before production deployment, or use a logging library that strips logs in production builds.',
+    snippet: false
+  },
+  {
+    id: 'debugger',
+    title: 'debugger statement detected',
+    sev: 'low',
+    pattern: /\bdebugger\b/g,
+    body: 'A debugger statement was found. This pauses execution in DevTools if open — should be removed before production deployment.',
+    fix: 'Remove all debugger statements.',
+    snippet: false
+  }
+];
+
+// ─── SCAN FUNCTION ───
+function scanCode() {
+  const code = document.getElementById('jsInput').value;
+  const resultsArea = document.getElementById('resultsArea');
+
+  if (!code.trim()) {
+    resultsArea.innerHTML = `<div style="color:var(--text-muted);font-family:var(--mono);font-size:12px;padding:20px 0;">// Paste JavaScript code first.</div>`;
+    return;
+  }
+
+  const findings = [];
+
+  RULES.forEach(rule => {
+    const matches = [];
+    let m;
+    const re = new RegExp(rule.pattern.source, rule.pattern.flags);
+    while ((m = re.exec(code)) !== null) {
+      // Get surrounding context (snippet)
+      const start = Math.max(0, m.index - 20);
+      const end = Math.min(code.length, m.index + m[0].length + 40);
+      const snippet = code.substring(start, end).replace(/\n/g, ' ').trim();
+      matches.push({ match: m[0], snippet });
+      if (matches.length >= 3) break; // max 3 per rule
+    }
+    if (matches.length > 0) {
+      findings.push({ ...rule, matches });
+    }
+  });
+
+  const critical = findings.filter(f => f.sev === 'critical').length;
+  const high = findings.filter(f => f.sev === 'high').length;
+  const medium = findings.filter(f => f.sev === 'medium').length;
+  const low = findings.filter(f => f.sev === 'low').length;
+
+  document.getElementById('findingCount').textContent =
+    findings.length + ' finding' + (findings.length !== 1 ? 's' : '');
+
+  if (findings.length === 0) {
+    resultsArea.innerHTML = `<div class="ok-box">✓ No vulnerability patterns detected.<br><span style="font-size:11px;opacity:0.7;">Static analysis only — also test dynamically with Burp Suite or OWASP ZAP.</span></div>`;
+    return;
+  }
+
+  let html = `<div class="scan-stats">
+    <div class="scan-stat"><span class="snum" style="color:${critical > 0 ? 'var(--red)' : 'var(--text-dim)'}">${critical}</span><span class="slbl">Critical</span></div>
+    <div class="scan-stat"><span class="snum" style="color:${high > 0 ? 'var(--orange)' : 'var(--text-dim)'}">${high}</span><span class="slbl">High</span></div>
+    <div class="scan-stat"><span class="snum" style="color:${medium > 0 ? 'var(--yellow)' : 'var(--text-dim)'}">${medium}</span><span class="slbl">Medium</span></div>
+    <div class="scan-stat"><span class="snum" style="color:${low > 0 ? 'var(--text-muted)' : 'var(--text-dim)'}">${low}</span><span class="slbl">Low</span></div>
+  </div>`;
+
+  // Order: critical → high → medium → low
+  const ordered = [
+    ...findings.filter(f => f.sev === 'critical'),
+    ...findings.filter(f => f.sev === 'high'),
+    ...findings.filter(f => f.sev === 'medium'),
+    ...findings.filter(f => f.sev === 'low')
+  ];
+
+  ordered.forEach(f => {
+    html += `<div class="finding finding-${f.sev}">
+      <div class="finding-head">
+        <span class="finding-sev sev-${f.sev}">${f.sev}</span>
+        <span class="finding-title">${esc(f.title)}</span>
+      </div>
+      <div class="finding-body">${esc(f.body)}</div>
+      ${f.snippet && f.matches[0] ? `<div class="finding-snippet">…${esc(f.matches[0].snippet)}…</div>` : ''}
+      ${f.matches.length > 1 ? `<div style="font-family:var(--mono);font-size:10px;color:var(--text-dim);margin-top:4px;">${f.matches.length} occurrence${f.matches.length > 1 ? 's' : ''} found</div>` : ''}
+      <div class="finding-fix">→ ${esc(f.fix)}</div>
+    </div>`;
+  });
+
+  resultsArea.innerHTML = html;
+}
+
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ─── SAMPLE ───
+const SAMPLE = `// Intentionally vulnerable JavaScript — for demonstration
+// DO NOT use in production
+
+const apiKey = "sk-live-abc123XYZ789secrettoken";
+const awsKey = "AKIAIOSFODNN7EXAMPLE";
+
+function renderUserComment(comment) {
+  const div = document.getElementById('comments');
+  div.innerHTML = comment; // XSS sink
+}
+
+function loadProfile() {
+  const name = location.hash.slice(1);
+  document.write('<h2>Welcome ' + name + '</h2>'); // XSS sink
+}
+
+function runDynamicCode(userInput) {
+  eval(userInput); // dangerous eval
+  setTimeout("console.log('done')", 100); // string setTimeout
+}
+
+function mergeConfig(target, source) {
+  for (const key in source) {
+    target[key] = source[key]; // prototype pollution risk
+  }
+}
+
+function generateToken() {
+  return Math.random().toString(36).substr(2); // insecure randomness
+}
+
+function saveSession(token) {
+  localStorage.setItem('auth_token', token); // sensitive in localStorage
+}
+
+const userId = location.search.split('id=')[1];
+document.getElementById('user').insertAdjacentHTML('beforeend', userId);
+
+console.log('Debug: user loaded', userId);
+debugger;
+`;
+
+function loadSample() {
+  document.getElementById('jsInput').value = SAMPLE;
+  setTimeout(scanCode, 50);
+}
+
+function clearTool() {
+  document.getElementById('jsInput').value = '';
+  document.getElementById('resultsArea').innerHTML = `<div class="results-empty" id="resultsEmpty"><span class="results-empty-icon">🔍</span><span>Paste JS code and click<br>Scan for Vulnerabilities</span></div>`;
+  document.getElementById('findingCount').textContent = '';
+}
+
+function toggleFaq(btn) {
+  btn.parentElement.classList.toggle('open');
+}
+</script>
 
 </body>
 </html>
